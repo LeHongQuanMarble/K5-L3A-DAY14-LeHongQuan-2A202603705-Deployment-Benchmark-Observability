@@ -1,8 +1,12 @@
 # DEPLOYMENT
 
-## Trạng thái: CHƯA deploy lên cloud
+## Trạng thái: ĐÃ deploy lên Render (gói Free)
 
-Môi trường làm bài không có tài khoản/đăng nhập Railway hoặc Render (cần `railway login` hoặc kết nối GitHub trên Render) nên **chưa có URL public**. Mình không điền URL giả. Phần này (CP6, ảnh `dashboard.png`, `running.png`, `test.png`) cần hoàn thành bằng tài khoản của chủ repo.
+- URL public: https://agent-audl.onrender.com
+- Nền tảng: Render Blueprint (`06-lab-complete/render.yaml`) gồm web service `agent` (Docker, Free) + Key Value `agent-redis` (Free).
+- Railway không dùng được vì trial của tài khoản đã hết hạn.
+- Kiểm tra: `/health` = 200, `/ready` = 200, `POST /ask` không key = 401.
+- Lưu ý: gói Free ngủ sau ~15 phút không có request, lần gọi đầu có thể chậm 50 giây trở lên.
 
 ## Đã sẵn sàng để deploy
 - `06-lab-complete/railway.toml`: builder `DOCKERFILE`, `healthcheckPath = "/health"`.

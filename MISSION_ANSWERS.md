@@ -66,7 +66,7 @@ $ curl http://localhost/ask -X POST -H 'Content-Type: application/json' -d '{"qu
 
 ## Part 3 — Cloud Deployment
 
-- **Trạng thái:** chưa deploy lên Railway/Render (xem [DEPLOYMENT.md](DEPLOYMENT.md): máy làm bài không có tài khoản/đăng nhập nền tảng cloud). Config đã sẵn sàng và qua `check_production_ready.py` (tiêu chí 12).
+- **Trạng thái:** đã deploy lên Render (gói Free). URL: https://agent-audl.onrender.com (chi tiết trong [DEPLOYMENT.md](DEPLOYMENT.md)). Ảnh: `screenshots/dashboard.png`, `screenshots/running.png`, `screenshots/test.png` (`test.png` là kết quả `curl` thật được render thành ảnh).
 - **So sánh `railway.toml` và `render.yaml`** (của agent Part 6):
   - Railway dùng TOML cho từng service: `[build] builder="DOCKERFILE"`, `[deploy] healthcheckPath="/health"`, restart policy; biến môi trường và Redis được tạo bằng CLI/dashboard (`railway variables set`, thêm plugin Redis) rồi tham chiếu.
   - Render dùng một Blueprint YAML mô tả cả hạ tầng: `services` gồm `type: web` (`runtime: docker`, `healthCheckPath`) và `type: redis`; `REDIS_URL` nối bằng `fromService`, secret bằng `generateValue: true`/`sync: false`. Tức Render khai báo được Redis và secret ngay trong file (IaC đầy đủ hơn), còn Railway cấu hình build/deploy trong file và phần còn lại trên nền tảng.
