@@ -137,4 +137,4 @@ Nguồn: `benchmark-results/scale_1_stats.csv`, `scale_3_stats.csv`.
   1. SLO phải đặt theo p95/p99; average che giấu tail latency (avg 194 → 297 ms trong khi p99 nhảy 238 ms → 1.7 s).
   2. So sánh hai phiên bản agent phải nhìn cả chất lượng lẫn chi phí: "cost / câu đúng" cho kết luận khác "cost / câu"; eval có exit code làm quality gate cho CI.
   3. Metrics (Grafana/Prometheus) cho biết *có* vấn đề, trace (Jaeger) cho biết *ở đâu*, log JSON có `trace_id` nối hai thứ lại; nhưng sự cố chất lượng (v1) cần giám sát riêng.
-- Nếu đưa agent này lên production thật, mình sẽ thêm: alert accuracy/eval định kỳ, tỉ lệ cache/retrieval hit, alert theo ngân sách tích luỹ ngày, alert saturation (in-flight/thread pool), và sửa rule `AgentInstanceDown` để bắt cả trường hợp target treo (pause) thay vì chỉ `up == 0`.
+- Nếu đưa agent này lên production thật, mình sẽ thêm: alert accuracy/eval định kỳ, tỉ lệ cache/retrieval hit, alert theo ngân sách tích luỹ ngày, alert saturation (in-flight/thread pool). Rule `AgentInstanceDown` (`up == 0`, `for: 30s`) đã bắt được target bị pause sau 41 s khi chạy riêng, nên không cần sửa.
