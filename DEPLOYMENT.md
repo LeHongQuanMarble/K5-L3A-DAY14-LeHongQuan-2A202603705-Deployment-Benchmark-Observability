@@ -45,3 +45,10 @@ curl -sS -o /dev/null -w '%{http_code}\n' "$BASE/ready"      # 200
 curl -sS -o /dev/null -w '%{http_code}\n' -X POST "$BASE/ask" -H 'Content-Type: application/json' -d '{"question":"Hello"}'   # 401
 curl -sS -o /dev/null -w '%{http_code}\n' -X POST "$BASE/ask" -H 'Content-Type: application/json' -H "X-API-Key: $AGENT_API_KEY" -d '{"question":"Hello"}'   # 200
 ```
+
+## Kiểm thử bản deploy có API key
+`utils/test_deployed.py` chạy `/health`, `/ready`, `/ask` không key (401), `/ask` có key (200) và 25 request liên tiếp để quan sát 429. Key lấy từ biến môi trường `AGENT_KEY`, không ghi vào file hay log:
+```bash
+AGENT_KEY=<AGENT_API_KEY trên Render> python3 utils/test_deployed.py
+```
+Kết quả ghi vào `reports/deployed_test.log` và `screenshots/test.png`.
