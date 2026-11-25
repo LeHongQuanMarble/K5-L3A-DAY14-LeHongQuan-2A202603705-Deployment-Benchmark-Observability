@@ -1,21 +1,34 @@
-"""
-Cost guard (tiêu chí 8).
+"""Cost guard: cộng dồn chi phí LLM trong Redis theo ngày, vượt DAILY_BUDGET_USD → 402."""
+import time
 
-Yêu cầu:
-  • Cộng dồn chi phí LLM (tính theo token) vào Redis
-  • Tổng chi phí vượt DAILY_BUDGET_USD (hoặc MONTHLY_BUDGET_USD) → HTTP 402
-"""
+from fastapi import HTTPException
 
-# Giá USD / 1K tokens (tham khảo gpt-4o-mini)
+from app.config import settings
+from app.redis_client import r
+
 PRICE_INPUT_PER_1K = 0.00015
 PRICE_OUTPUT_PER_1K = 0.0006
 
 
+def _key() -> str:
+    return "cost:" + time.strftime("%Y-%m-%d", time.gmtime())
+
+
 def check_budget() -> None:
-    """Gọi TRƯỚC khi gọi LLM. Hết budget → raise HTTPException(status_code=402)."""
-    raise NotImplementedError("TODO: check_budget")
+    try:
+        spent = float(r.get(_key()) or 0.0)
+    except Exception:
+        raise HTTPException(status_code=503, detail="Cost guard unavailable")
+    if spent >= settings.daily_budget_usd:
+        raise HTTPException(status_code=402, detail="Daily budget exhausted")
 
 
 def record_cost(input_tokens: int, output_tokens: int) -> float:
-    """Gọi SAU khi gọi LLM. Cộng chi phí của request vào tổng, trả về chi phí request."""
-    raise NotImplementedError("TODO: record_cost")
+    cost = (input_tokens / 1000) * PRICE_INPUT_PER_1K + (output_tokens / 1000) * PRICE_OUTPUT_PER_1K
+    try:
+        k = _key()
+        r.incrbyfloat(k, cost)
+        r.expire(k, 2 * 86400)
+    except Exception:
+        pass
+    return cost
