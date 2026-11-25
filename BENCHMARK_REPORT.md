@@ -81,14 +81,14 @@ Hai entry được đặt đầu danh sách (`utils/mock_llm.py` ở cả `devel
 
 ### 4.2 Thí nghiệm "phá hệ thống"
 
-Mình chạy gộp A + B + D một lần (khó tách riêng vì mỗi lần dựng lại stack mất nhiều phút): đặt `MOCK_ERROR_RATE=0.2 MOCK_SLOW_RATE=0.3`, recreate 3 agent, bật Locust 100 user, rồi `docker pause` instance 3. Thời gian đo từ lúc chạy Locust.
+Mình chạy gộp A + B + D một lần (khó tách riêng vì mỗi lần dựng lại stack mất nhiều phút): đặt `MOCK_ERROR_RATE=0.2 MOCK_SLOW_RATE=0.3`, recreate 3 agent, bật Locust 100 user, rồi `docker pause` instance 3. Thời gian đo từ lúc chạy Locust. Riêng kịch bản D lần gộp không ghi nhận được alert, nên mình chạy lại riêng: dựng lại stack, `docker pause production-agent-3`, poll Prometheus mỗi 5 s; thời gian D đo từ lúc pause.
 
 | # | Thay đổi | Alert nào firing | Thời gian từ lúc đổi → firing | Panel nào phản ánh rõ nhất |
 |---|---|---|---|---|
 | A | `MOCK_ERROR_RATE=0.2` | AgentHighErrorRate | ~71 s (pending sau ~10 s, `for: 1m`) | Error rate (19.28 %) + Requests/s theo status code (503) |
 | B | `MOCK_SLOW_RATE=0.3` | AgentHighLatencyP95 | ~132 s (`for: 2m`) | Latency p50/p95/p99 (p95 ≈ 1.9 s) |
 | C | `LLM_MODEL=mock-llm-large` | Không chạy thí nghiệm riêng. Ghi nhận: LLMCostBurnRateHigh đã firing sẵn ở lần chạy này vì tải benchmark ~60 req/s đã tốn ~$8/giờ, vượt ngưỡng $2/giờ | — | Cost burn rate / LLM cost (1h) |
-| D | `docker pause` 1 instance | Không thấy AgentInstanceDown firing trong khoảng quan sát; panel "Instances up" giảm còn 2 (scrape instance bị pause bị timeout, nhưng alert chưa kịp chuyển pending/firing như dự kiến) | không đo được | Instances up |
+| D | `docker pause` 1 instance (chạy lại riêng, stack 3 agent, không tải) | AgentInstanceDown: pending sau ~10 s, **firing sau 41 s** (`for: 30s`); `sum(up{job="agent"})` giảm 3 → 2 sau ~10 s. Log: `reports/scenario_d_instance_down.log`, ảnh: `screenshots/prometheus-instance-down-firing.png` | 41 s | Instances up |
 | E | `AGENT_VERSION=v1` | Không chạy | — | — |
 
 (Alert LLMCostBurnRateHigh firing từ ~10 s đầu vì rate 5 phút còn mang tải của hai lần benchmark scale trước đó.)

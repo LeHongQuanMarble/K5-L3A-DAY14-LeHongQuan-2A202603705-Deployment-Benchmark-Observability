@@ -1,0 +1,12 @@
+before: up_sum=3
+paused at t=0
+t=0s up_sum=3 alerts=[]
+t=5s up_sum=3 alerts=[]
+t=10s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'pending')]
+t=16s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'pending')]
+t=21s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'pending')]
+t=26s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'pending')]
+t=31s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'pending')]
+t=36s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'pending')]
+t=41s up_sum=2 alerts=[('AgentInstanceDown', '192.168.96.7:8000', 'firing')]
+FIRING at t=41s
