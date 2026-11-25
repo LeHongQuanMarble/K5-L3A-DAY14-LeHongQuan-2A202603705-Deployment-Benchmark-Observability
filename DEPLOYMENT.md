@@ -52,3 +52,14 @@ curl -sS -o /dev/null -w '%{http_code}\n' -X POST "$BASE/ask" -H 'Content-Type: 
 AGENT_KEY=<AGENT_API_KEY trên Render> python3 utils/test_deployed.py
 ```
 Kết quả ghi vào `reports/deployed_test.log` và `screenshots/test.png`.
+
+### Kết quả chạy thật trên https://agent-audl.onrender.com
+| Kiểm tra | Kết quả |
+| --- | --- |
+| `GET /health` | 200 |
+| `GET /ready` | 200 |
+| `POST /ask` không API key | 401 |
+| `POST /ask` có `X-API-Key` | 200 |
+| 25 request liên tiếp (`RATE_LIMIT_PER_MINUTE=20`) | 19 × 200, rồi 6 × 429 |
+
+Log đầy đủ: `reports/deployed_test.log`; ảnh: `screenshots/test.png` (render từ output thật, key được che bằng `***`).

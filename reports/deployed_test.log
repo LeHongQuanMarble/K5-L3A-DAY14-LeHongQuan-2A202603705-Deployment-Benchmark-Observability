@@ -1,0 +1,12 @@
+$ curl https://agent-audl.onrender.com/health
+HTTP 200  {"status":"ok"}
+$ curl https://agent-audl.onrender.com/ready
+HTTP 200  {"status":"ready"}
+$ curl -X POST /ask   (không có API key)
+HTTP 401
+$ curl -X POST /ask -H 'X-API-Key: ***'
+HTTP 200  {"question":"Hello","answer":"Agent đang hoạt động tốt! (mock response) Hỏi thêm
+$ 25 request liên tiếp với X-API-Key: ***
+codes: 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 429 429 429 429 429 429
+200: 19  429: 6
+KẾT QUẢ: auth 200 = True, rate limit 429 = True
