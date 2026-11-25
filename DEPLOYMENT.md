@@ -23,7 +23,20 @@ railway up && railway domain
 ```
 
 ## Biến môi trường cần đặt trên nền tảng
-`AGENT_API_KEY`, `REDIS_URL`, `RATE_LIMIT_PER_MINUTE`, `DAILY_BUDGET_USD`, `ENVIRONMENT`; `PORT` do nền tảng cấp.
+## Environment Variables Set (trên Render)
+| Biến | Nguồn |
+| --- | --- |
+| `AGENT_API_KEY` | Render tự sinh (`generateValue: true`), không commit vào repo |
+| `REDIS_URL` | Nối tự động từ Key Value `agent-redis` (`fromService`) |
+| `RATE_LIMIT_PER_MINUTE` | `20` (khai báo trong `render.yaml`) |
+| `DAILY_BUDGET_USD` | `5.0` (khai báo trong `render.yaml`) |
+| `ENVIRONMENT` | `production` (khai báo trong `render.yaml`) |
+| `PORT` | Do Render cấp |
+
+## Screenshots
+- [Deployment dashboard](screenshots/dashboard.png)
+- [Service running](screenshots/running.png)
+- [Test results](screenshots/test.png)
 
 ## Lệnh kiểm tra sau khi deploy
 ```bash
