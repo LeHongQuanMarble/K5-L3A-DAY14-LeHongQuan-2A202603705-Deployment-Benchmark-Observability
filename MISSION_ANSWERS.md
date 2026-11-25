@@ -156,3 +156,10 @@ Xem [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md). Mình cũng sửa một lỗi tr
 
 ## AI log
 Mình dùng Claude Code (Claude Sonnet 5.5) để hoàn thành bài: viết các file TODO của `06-lab-complete/`, chạy các lệnh benchmark/Docker, chụp ảnh bằng Chrome headless và soạn các file báo cáo. Mọi số liệu trong bài lấy từ lần chạy thật trên máy (JSON/CSV trong `reports/`, `benchmark-results/`).
+
+**Phần deploy và kiểm thử bổ sung (cũng dùng Claude Code):**
+- *Hỏi gì / nhận gì:* nhờ AI deploy `06-lab-complete/` lên Render gói Free. AI đề xuất thêm `plan: free` và `rootDir: 06-lab-complete` vào `render.yaml` (nếu thiếu `plan`, Render mặc định gói Starter có phí) và điều khiển Chrome để tạo Blueprint với Blueprint Path `06-lab-complete/render.yaml`.
+- *Mình tự làm / kiểm tra:* mình tự đăng nhập Render và tự lấy `AGENT_API_KEY` từ dashboard (AI không đọc được key). Mình chạy `utils/test_deployed.py` bằng key đó: `/ask` có key → 200, 25 request liên tiếp → 19 × 200 rồi 6 × 429 (`reports/deployed_test.log`).
+- *Kịch bản D chạy lại:* lần gộp A+B+D ban đầu không thấy `AgentInstanceDown` firing, nên chạy riêng stack 3 agent, `docker pause production-agent-3`; alert firing sau 41 s (`reports/scenario_d_instance_down.log`). Số này lấy từ Prometheus API, không ước lượng.
+- *Lưu ý:* `screenshots/test.png` được dựng từ output `curl` thật, không phải ảnh chụp terminal. Chạy lại `check_production_ready.py` trong venv mới: PASS 12/12.
+
